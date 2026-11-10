@@ -35,14 +35,6 @@ On first startup (`APP_ENV=dev`), the Go backend automatically applies embedded 
 
 ```text
 BIS/
-├── Attachments/                     # Project spec & handoff documentation pack
-│   ├── Tourism_IS_Project_Description.md
-│   ├── 00_START_HERE.md
-│   ├── 01_ARCHITECTURE_AND_DECISIONS.md
-│   ├── 02_ROADMAP_PHASES.md
-│   ├── 03_DATABASE_SCHEMA.md
-│   ├── 08_PROGRESS_LOG.md
-│   └── 09_AGENT_HANDOFF_PROMPT.md
 ├── backend/                         # Go REST API + Embedded SQL Migrations
 │   ├── cmd/api/main.go
 │   ├── internal/

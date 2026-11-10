@@ -1,6 +1,9 @@
 # env
 .env
 
+# attachments
+Attachments
+
 # go
 backend/bin/
 *.test

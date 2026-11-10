@@ -11,17 +11,10 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/go-chi/chi/v5"
-	"github.com/go-chi/chi/v5/middleware"
-	"github.com/go-chi/cors"
-	"github.com/jackc/pgx/v5/pgxpool"
-
-	"tourism-is/backend/internal/auth"
 	"tourism-is/backend/internal/config"
 	"tourism-is/backend/internal/platform/db"
-	"tourism-is/backend/internal/platform/httpx"
 	"tourism-is/backend/internal/seed"
-	"tourism-is/backend/internal/user"
+	"tourism-is/backend/internal/server"
 )
 
 func main() {
@@ -60,7 +53,7 @@ func run() error {
 
 	srv := &http.Server{
 		Addr:              ":" + cfg.HTTPPort,
-		Handler:           newRouter(cfg, pool),
+		Handler:           server.NewRouter(cfg, pool),
 		ReadHeaderTimeout: 5 * time.Second,
 	}
 	go func() {
@@ -74,43 +67,4 @@ func run() error {
 		return err
 	}
 	return nil
-}
-
-func newRouter(cfg config.Config, pool *pgxpool.Pool) http.Handler {
-	jwtm := auth.NewJWTManager(cfg.JWTSecret, cfg.JWTTTL)
-	authSvc := auth.NewService(user.NewRepository(pool), jwtm)
-	authHandler := auth.NewHandler(authSvc, jwtm)
-
-	r := chi.NewRouter()
-	r.Use(middleware.RequestID, middleware.RealIP, httpx.Logger, middleware.Recoverer)
-	r.Use(cors.Handler(cors.Options{
-		AllowedOrigins: cfg.CORSOrigins,
-		AllowedMethods: []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowedHeaders: []string{"Authorization", "Content-Type"},
-		MaxAge:         300,
-	}))
-	// Keep total request time under the 3 s NFR-02 budget.
-	r.Use(httpx.Timeout(cfg.DBTimeout + 500*time.Millisecond))
-
-	r.Route("/api/v1", func(r chi.Router) {
-		r.Get("/health", healthHandler(pool, cfg.DBTimeout))
-		authHandler.Routes(r)
-	})
-	r.NotFound(func(w http.ResponseWriter, _ *http.Request) {
-		httpx.WriteError(w, httpx.NewError(http.StatusNotFound, httpx.CodeNotFound, "Route not found"))
-	})
-	return r
-}
-
-func healthHandler(pool *pgxpool.Pool, timeout time.Duration) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		ctx, cancel := context.WithTimeout(r.Context(), timeout)
-		defer cancel()
-		if err := pool.Ping(ctx); err != nil {
-			httpx.WriteJSON(w, http.StatusServiceUnavailable, httpx.NewError(http.StatusServiceUnavailable,
-				httpx.CodeServiceUnavailable, "Database is unavailable"))
-			return
-		}
-		httpx.WriteJSON(w, http.StatusOK, map[string]string{"status": "ok", "db": "ok"})
-	}
 }
