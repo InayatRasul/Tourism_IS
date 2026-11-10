@@ -1,0 +1,12 @@
+DROP TABLE IF EXISTS notification_logs;
+DROP TABLE IF EXISTS reviews;
+DROP TABLE IF EXISTS payments;
+DROP TABLE IF EXISTS bookings;
+DROP TABLE IF EXISTS trip_days;
+DROP TABLE IF EXISTS trip_packages;
+DROP TABLE IF EXISTS excursion_slots;
+DROP TABLE IF EXISTS itinerary_stops;
+DROP TABLE IF EXISTS excursions;
+DROP TABLE IF EXISTS categories;
+DROP TABLE IF EXISTS agencies;
+DROP TABLE IF EXISTS users;
