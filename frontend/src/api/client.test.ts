@@ -54,7 +54,7 @@ describe('apiFetch', () => {
         details: { email: 'Enter a valid email address' },
       })
     );
-    const err = await apiFetch('/auth/register').catch((e) => e);
+    const err = (await apiFetch('/auth/register').catch((e) => e)) as ApiError;
     expect(err).toBeInstanceOf(ApiError);
     expect(err.status).toBe(400);
     expect(err.code).toBe('VALIDATION_ERROR');
@@ -64,14 +64,14 @@ describe('apiFetch', () => {
 
   it('does not treat 401/409 as service unavailable', async () => {
     fetchMock.mockResolvedValue(jsonResponse(409, { code: 'EMAIL_TAKEN', message: 'taken' }));
-    const err = await apiFetch('/auth/register').catch((e) => e);
+    const err = (await apiFetch('/auth/register').catch((e) => e)) as ApiError;
     expect(err.code).toBe('EMAIL_TAKEN');
     expect(unavailable).toEqual([]);
   });
 
   it.each([502, 503, 504])('signals Service Unavailable on HTTP %i (NFR-02)', async (status) => {
     fetchMock.mockResolvedValue(jsonResponse(status, {}));
-    const err = await apiFetch('/health').catch((e) => e);
+    const err = (await apiFetch('/health').catch((e) => e)) as ApiError;
     expect(err).toBeInstanceOf(ApiError);
     expect(err.code).toBe('SERVICE_UNAVAILABLE');
     expect(unavailable).toEqual([true]);
@@ -79,7 +79,7 @@ describe('apiFetch', () => {
 
   it('signals Service Unavailable when the server is unreachable', async () => {
     fetchMock.mockRejectedValue(new TypeError('Failed to fetch'));
-    const err = await apiFetch('/health').catch((e) => e);
+    const err = (await apiFetch('/health').catch((e) => e)) as ApiError;
     expect(err.code).toBe('SERVICE_UNAVAILABLE');
     expect(unavailable).toEqual([true]);
   });
@@ -94,7 +94,7 @@ describe('apiFetch', () => {
         })
     );
     const started = Date.now();
-    const err = await apiFetch('/health', { timeoutMs: 50 }).catch((e) => e);
+    const err = (await apiFetch('/health', { timeoutMs: 50 }).catch((e) => e)) as ApiError;
     expect(Date.now() - started).toBeLessThan(1000);
     expect(err.code).toBe('SERVICE_UNAVAILABLE');
     expect(err.message).toMatch(/timed out/i);
