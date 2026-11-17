@@ -22,12 +22,12 @@ docker compose up -d --build
 
 On first startup (`APP_ENV=dev`), the Go backend automatically applies embedded database migrations (`backend/migrations/`) and seeds these accounts into PostgreSQL:
 
-| Role | Login / Email | Password | Capabilities |
-|------|---------------|----------|--------------|
-| **Admin** | `admin` | `admin` | Platform overview, block/unblock users, verify/reject agencies, manage categories, view all bookings |
-| **Tourist** | `tourist@tis.kz` | `Passw0rd!` | Search & filter excursions/trips, book slots (with Sold Out + alternatives test), cancel with 24h refund rule, leave reviews |
-| **Guide** | `guide@tis.kz` | `Passw0rd!` | Create/publish excursions & itinerary stops, add/reschedule/cancel time slots, view participant rosters |
-| **Agency Manager** | `manager@tis.kz` | `Passw0rd!` | Manage agency profile (`Steppe Explorers`), publish excursions, create & manage multi-day Trip Packages |
+| Role               | Login / Email    | Password    | Capabilities                                                                                                                 |
+| ------------------ | ---------------- | ----------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| **Admin**          | `admin`          | `admin`     | Platform overview, block/unblock users, verify/reject agencies, manage categories, view all bookings                         |
+| **Tourist**        | `tourist@tis.kz` | `Passw0rd!` | Search & filter excursions/trips, book slots (with Sold Out + alternatives test), cancel with 24h refund rule, leave reviews |
+| **Guide**          | `guide@tis.kz`   | `Passw0rd!` | Create/publish excursions & itinerary stops, add/reschedule/cancel time slots, view participant rosters                      |
+| **Agency Manager** | `manager@tis.kz` | `Passw0rd!` | Manage agency profile (`Steppe Explorers`), publish excursions, create & manage multi-day Trip Packages                      |
 
 ---
 
